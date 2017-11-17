@@ -38,6 +38,7 @@ font-size:24px;
 border-color:white;
 border-style:solid;
 background-color:lightgrey;
+text-align:center;
 }
 .wrapper1{
 float:left;
@@ -66,4 +67,7 @@ display:block;
 }
 #clear{
 clear:both;	
+}
+.start{
+font-size:28px;
 }

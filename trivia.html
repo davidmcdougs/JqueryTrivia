@@ -13,11 +13,11 @@
 		<div class='island'>
 		<!-- hold all dynamic content -->
 		<!-- questions and answers borrowed from https://www.tutorialspoint.com/jquery/jquery_online_quiz.htm -->
-		<div id='clock'>
+		<div id='clock' value="30">
 			00:30
 		</div>
 		<div class='regis'>
-		
+		Special thanks to https://www.tutorialspoint.com/jquery/jquery_online_quiz.htm for supplying questions and answers.
 		<!-- ask questions here	 -->
 		</div>
 		<div class='wrapper1'>
@@ -44,8 +44,10 @@
 	</div>
 </div>
 <script>
+	//in order to add more questions to this game, add an extra entry to questions array, then add a variable Q+indexOf[questions], then add an entry for the Q variable in the answers array. Also add the correct answer to the right answers array. To improve the game, make the game able to judge right answers on a case by case basis, not global. Probably object notation would have made this easier.
+
 	//array for questions
-	right = true
+	
 	var questions = ["Which built-in method returns the character at the specified index?",'Which built-in method returns the characters in a string beginning at the specified location?','Which of the following jQuery method returns true if the specified class is present on at least one of the set of matched elements?','Which of the following jQuery method adds the previous selection to the current selection?','Which of the following jQuery method gets the width property of an element?','Which of the following jQuery method prevents the browser from executing the default action?','Which of the following jQuery method stops the rest of the event handlers from being executed?','Which of the following jQuery method loads a remote page using an HTTP request?']
 	// each question should have an array with four answers, more if you had time
 	var Q0 =['characterAt()','getCharAt()','charAt()','char.text()']
@@ -60,53 +62,92 @@
 	var answers=[Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7]
 	var rightAnswers = ['charAt()','substr()','hasClass(class)','andSelf()','width()','preventDefault()','stopImmediatePropagation()','jQuery.ajax(options)']
 	var chronos
-	var answerSet
+	var randomizer
+	var playAgain = $('<button/>', {
+        text: 'Do you want to play again?',
+        class: 'start',
+    });
+
 // function roll picks a random question, corresponding answer array and pushes the value of them to the answer buttons in html, and starts the stopwatch function
 	function roll(){
+		if(answers.length < 1){
+			clearInterval(chronos);
+			$('.regis').text('you are all out of questions! You missed '+missed+' questions.');
+			// $('#clock').text('special thanks to https://www.tutorialspoint.com/jquery/jquery_online_quiz.htm')
+			$('.answer').attr('disabled', 'true');
+			$('.island').append(playAgain);
+
+		}
+		else {
 time=0;
 clearInterval(chronos);		
 chronos = setInterval(stopWatch, 1000);
-var randomizer=Math.floor((Math.random() * questions.length));
+randomizer=Math.floor((Math.random() * answers.length));
 console.log(randomizer);	
 $('.regis').text(questions[randomizer]);
-answerSet=answers[randomizer];
-console.log(answerSet);
 for (i=0;i<answers.length;i++){
 	$('#answer'+i).text(answers[randomizer][i]);
 	$('#answer'+i).val(answers[randomizer][i]);
 }
 	}
-	var timer;
+}
     var time =0;
     // stopwatch ticks down clock by 1 each second
     function stopWatch() {
+
             time= time+1;
-            timer = $('#clock').text(30 - time);
-            if (time>30){
-            	alert('time is up!')
-            	roll()
+            $('#clock').text(30 - time);
+            if (time>29){
+time=0;
+missed++;
+$('.regis').text("you're out of time!");
+clearInterval(chronos);         
+setTimeout(function(){
+var removed = answers.splice(randomizer, 1);
+var removedQ = questions.splice(randomizer, 1);
+roll()
+$('#clock').text(30);
+	
+}, 3000);
+            	
             }
            
     }
+		$(document).on('click','.start', function(){
+answers=[Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7];
+questions = ["Which built-in method returns the character at the specified index?",'Which built-in method returns the characters in a string beginning at the specified location?','Which of the following jQuery method returns true if the specified class is present on at least one of the set of matched elements?','Which of the following jQuery method adds the previous selection to the current selection?','Which of the following jQuery method gets the width property of an element?','Which of the following jQuery method prevents the browser from executing the default action?','Which of the following jQuery method stops the rest of the event handlers from being executed?','Which of the following jQuery method loads a remote page using an HTTP request?'];
 
-		$('.start').on('click', function(){
+	// each question should have an array with four answers, more 			
 roll()
-$('.start').attr('disabled', 'true');
 $('.start').remove();
+$('.answer').removeAttr('disabled');
 	})
+var wait = 0;
+var missed = 0;		
 		$('.answer').on('click', function(){
-		var choosen = this.value
-		var result = rightAnswers.indexOf(choosen)
-		console.log(result)
+		if (wait == 0)	
+		$('.answer').attr('disabled', 'true');
+		var choosen = this.value;
+		var result = rightAnswers.indexOf(choosen);
+		console.log(result);
 		if (result != -1){
-			alert ('Correct answer!')
+			$('.regis').text('Correct answer!');
 		}
 		else {
-			alert('WRONG!')
+			$('.regis').text('WRONG!');
+		missed++;
 		}
-roll()
-timer.text(30);
+clearInterval(chronos);
+setTimeout(function(){
+var removed = answers.splice(randomizer, 1);
+var removedQ = questions.splice(randomizer, 1);
+$('.answer').removeAttr('disabled');
+$('#clock').text(30);
 time=0;
+roll()		
+}, 3000);
+
+
 })
 
 </script>	
