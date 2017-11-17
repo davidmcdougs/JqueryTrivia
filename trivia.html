@@ -1,0 +1,113 @@
+<doctype! html>
+<html>
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <title>Epic trivia game</title>
+</head>
+<body>
+	<div class='bg'>
+	<div class='content'>
+		<div class='island'>
+		<!-- hold all dynamic content -->
+		<!-- questions and answers borrowed from https://www.tutorialspoint.com/jquery/jquery_online_quiz.htm -->
+		<div id='clock'>
+			00:30
+		</div>
+		<div class='regis'>
+		
+		<!-- ask questions here	 -->
+		</div>
+		<div class='wrapper1'>
+		<!-- hold our four multiple choice questions here	 -->
+			<button class='answer' id='answer0' width='50%'>
+		
+			</button>
+			<button class='answer' id='answer1' width='50%'>
+			
+			</button>
+		</div>
+		<div class='wrapper2'>
+			<button class='answer' id='answer2' width='50%'>
+		
+			</button>
+			<button class='answer' id='answer3' width='50%'>
+			
+			</button>	
+		</div>
+		<div id='clear'>
+		</div>
+		<button class='start'>Press to start the game</button>					
+	</div>
+	</div>
+</div>
+<script>
+	//array for questions
+	right = true
+	var questions = ["Which built-in method returns the character at the specified index?",'Which built-in method returns the characters in a string beginning at the specified location?','Which of the following jQuery method returns true if the specified class is present on at least one of the set of matched elements?','Which of the following jQuery method adds the previous selection to the current selection?','Which of the following jQuery method gets the width property of an element?','Which of the following jQuery method prevents the browser from executing the default action?','Which of the following jQuery method stops the rest of the event handlers from being executed?','Which of the following jQuery method loads a remote page using an HTTP request?']
+	// each question should have an array with four answers, more if you had time
+	var Q0 =['characterAt()','getCharAt()','charAt()','char.text()']
+	var Q1 =['substr()','getSubstring()','slice()','None of the above']
+	var Q2 =['hasCSSClass(class)','hasStyleClass(class)','hasClass(class)','$(.class)']
+	var Q3 =['add(selector)','andSelf()','ppend(selector)','None of the above.']
+	var Q4 =['getCSSWidth()','getWidth()','width()','None of the above.']
+	var Q5 =['preventDefault()','stopImmediatePropagation()','stopPropagation()','None of the above.']
+	var Q6 =['preventDefault()','stopImmediatePropagation()','stopPropagation()','none of the above.']
+	var Q7 =['jQuery.ajax(options)','jQuery.ajaxSetup(options)','serialize()','serializeArray()']
+// array for holding answer arrays
+	var answers=[Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7]
+	var rightAnswers = ['charAt()','substr()','hasClass(class)','andSelf()','width()','preventDefault()','stopImmediatePropagation()','jQuery.ajax(options)']
+	var chronos
+	var answerSet
+// function roll picks a random question, corresponding answer array and pushes the value of them to the answer buttons in html, and starts the stopwatch function
+	function roll(){
+time=0;
+clearInterval(chronos);		
+chronos = setInterval(stopWatch, 1000);
+var randomizer=Math.floor((Math.random() * questions.length));
+console.log(randomizer);	
+$('.regis').text(questions[randomizer]);
+answerSet=answers[randomizer];
+console.log(answerSet);
+for (i=0;i<answers.length;i++){
+	$('#answer'+i).text(answers[randomizer][i]);
+	$('#answer'+i).val(answers[randomizer][i]);
+}
+	}
+	var timer;
+    var time =0;
+    // stopwatch ticks down clock by 1 each second
+    function stopWatch() {
+            time= time+1;
+            timer = $('#clock').text(30 - time);
+            if (time>30){
+            	alert('time is up!')
+            	roll()
+            }
+           
+    }
+
+		$('.start').on('click', function(){
+roll()
+$('.start').attr('disabled', 'true');
+$('.start').remove();
+	})
+		$('.answer').on('click', function(){
+		var choosen = this.value
+		var result = rightAnswers.indexOf(choosen)
+		console.log(result)
+		if (result != -1){
+			alert ('Correct answer!')
+		}
+		else {
+			alert('WRONG!')
+		}
+roll()
+timer.text(30);
+time=0;
+})
+
+</script>	
+</body>	
